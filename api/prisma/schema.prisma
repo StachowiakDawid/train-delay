@@ -1,0 +1,71 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
+  output          = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// model station {
+//   id   Int    @id(map: "station_pk") @default(autoincrement())
+//   name String @unique @db.VarChar
+//   // stop stop[]
+// }
+
+model route {
+  id         Int          @id(map: "route_pk") @default(autoincrement())
+  route      String       @unique @db.VarChar
+  array_route String[]     @db.VarChar
+  connection connection[]
+}
+
+model time_offset {
+  id                  Int          @id(map: "time_offset_pk") @default(autoincrement())
+  arrivals_offsets    Int[]
+  departments_offsets Int[]
+  connections         connection[]
+}
+
+model connection {
+  id                Int         @id(map: "connection_pk") @default(autoincrement())
+  department_date   DateTime    @db.Timestamp(0)
+  // name            String   @db.VarChar
+  operator          String      @db.VarChar
+  // destination     String   @db.VarChar
+  // connection_type String   @db.VarChar
+  // description     String   @db.VarChar
+  // stops                  stop[]
+  // pkp_id          String   @db.VarChar
+  route_id          Int
+  route             route       @relation(fields: [route_id], references: [id])
+  time_offset_id    Int
+  time_offset       time_offset @relation(fields: [time_offset_id], references: [id])
+  arrival_delays    Int[]
+  department_delays Int[]
+  cancelled         Boolean[]
+}
+
+// model stop {
+//   id               Int        @id(map: "stop_pk") @default(autoincrement())
+//   connection_id    Int
+//   order_number     Int
+//   connection       connection @relation(fields: [connection_id], references: [id])
+//   station_id       Int
+//   station          station    @relation(fields: [station_id], references: [id])
+//   // arrival_timestamp    DateTime   @db.Timestamp(0)
+//   // department_timestamp DateTime   @db.Timestamp(0)
+//   // arrival_time         DateTime   @db.Time(0)
+//   // department_time      DateTime   @db.Time(0)
+//   arrival_delay    Int
+//   department_delay Int
+//   // platform             String     @db.VarChar
+//   // railway              String     @db.VarChar
+//   // problems             String[]   @db.VarChar
+//   cancelled        Boolean
+//   // first_station        Boolean
+//   // last_station         Boolean
+
+//   @@index([connection_id])
+// }

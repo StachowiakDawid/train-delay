@@ -1,0 +1,8 @@
+node_modules/
+
+/generated/prisma
+.env
+data/
+allFiles.json
+pgdata/
+pgdata.tar.gz

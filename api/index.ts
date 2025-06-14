@@ -1,0 +1,40 @@
+import express from 'express';
+import { PrismaClient } from './generated/prisma/client';
+import { getSimple } from './generated/prisma/sql';
+import 'dotenv/config';
+import process  from 'node:process';
+import replacements from './char_replacements';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter});
+
+const app = express();
+
+BigInt.prototype.toJSON = function() {
+    return this.toString()
+} 
+
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTEND_URL}`);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', `true`);
+    next();
+});
+
+app.use(express.json());
+
+app.get('/api/:department/:destination', async (req, res) => {
+    let { department, destination } = req.params;
+    const expression   = /[ąćęłńóśźż]/gi; 
+    department = department.trim().toLowerCase().replaceAll(' ', '-').replace(expression, (letter) => replacements[letter]);
+    destination = destination.trim().toLowerCase().replaceAll(' ', '-').replace(expression, (letter) => replacements[letter]);
+    const data = await prisma.$queryRawTyped(getSimple(department, destination));
+
+    res.json(data);
+});
+
+const server = app.listen(3000);
