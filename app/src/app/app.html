@@ -1,0 +1,162 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1>Sprawdź opóźnienia pociągów na danej trasie</h1>
+      <form>
+        <div class="form-group row">
+          <label for="departmentStation" class="col-sm-2 col-form-label"
+            >Stacja początkowa</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="departmentStation"
+              [(ngModel)]="department"
+              [disabled]="!this.isReady()"
+              name="department"
+            />
+          </div>
+        </div>
+        <div class="form-group row mt-2">
+          <label for="destinationStation" class="col-sm-2 col-form-label"
+            >Stacja końcowa</label
+          >
+          <div class="col-sm-10">
+            <input
+              type="text"
+              class="form-control"
+              id="destinationStation"
+              [(ngModel)]="destination"
+              [disabled]="!this.isReady()"
+              name="destination"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 d-flex justify-content-center mb-3">
+            <button
+              type="button"
+              class="btn btn-primary mt-2 me-3"
+              name="submitButton"
+              [disabled]="!this.isReady()"
+              (click)="submit()"
+            >
+              Wyszukaj historię opóźnień
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary mt-2"
+              (click)="swapStations()"
+            >
+              Zamień stacje
+            </button>
+          </div>
+        </div>
+      </form>
+      @if (!this.isReady()) {
+      <div class="d-flex justify-content-center mt-4">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      }
+      @if (response.length !== 0 && !isLoading) {
+      <div class="text-center">
+        {{ response.length }} {{ getResultsDeclension() }}. Strona {{ page }} z
+        {{ pageCount }}.
+      </div>
+      <nav>
+        <ul class="pagination justify-content-center">
+          @if (page > 3) {
+          <li class="page-item" (click)="updateConnectionsToDisplay(1)">
+            <a class="page-link"><i class="bi bi-chevron-double-left"></i></a>
+          </li>
+          <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page - 1)">
+            <a class="page-link"><i class="bi bi-chevron-compact-left"></i></a>
+          </li> -->
+          } @for (pageNumber of getPageNumbers(); track pageNumber) {
+          <li
+            class="page-item"
+            [ngClass]="{ active: pageNumber === page }"
+            (click)="updateConnectionsToDisplay(pageNumber)"
+          >
+            <a class="page-link">{{ pageNumber }}</a>
+          </li>
+          } @if (page < pageCount - 2) {
+          <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page + 1)">
+            <a class="page-link"><i class="bi bi-chevron-right"></i></a>
+          </li> -->
+          <li class="page-item" (click)="updateConnectionsToDisplay(pageCount)">
+            <a class="page-link"><i class="bi bi-chevron-double-right"></i></a>
+          </li>
+          }
+        </ul>
+      </nav>
+      } @if (isLoading) {
+      <div class="d-flex justify-content-center mt-4">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @for(connection of connectionsToDisplay; track connection.track) {
+      <div
+        class="row"
+        [ngClass]="{ 'text-decoration-line-through': connection.cancelled }"
+      >
+        <div class="col-sm-6 d-flex justify-content-between">
+          {{ (connection.department_timestamp | date:'yyyy-MM-dd HH:mm') }} @if
+          (!connection.cancelled) {
+          <span
+            [ngClass]="[ connection.department_delay > 0 ? 'text-danger' : 'text-success' ]"
+            >{{ getMinuteDeclension(connection.department_delay) }}
+            opóźnienia</span
+          >}
+        </div>
+        <div class="col-sm-6 d-flex justify-content-between">
+          {{ (connection.s2_arrival_timestamp | date:'yyyy-MM-dd HH:mm') }} @if
+          (!connection.cancelled) {
+          <span
+            [ngClass]="[ connection.s2_arrival_delay > 0 ? 'text-danger' : 'text-success' ]"
+            >{{ getMinuteDeclension(connection.s2_arrival_delay) }}
+            opóźnienia</span
+          >
+          }
+        </div>
+      </div>
+      <hr />
+      } @if (response.length !== 0 && !isLoading) {
+      <ul class="pagination justify-content-center">
+        @if (page > 3) {
+        <li class="page-item" (click)="updateConnectionsToDisplay(1)">
+          <a class="page-link"><i class="bi bi-chevron-double-left"></i></a>
+        </li>
+        <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page - 1)">
+            <a class="page-link"><i class="bi bi-chevron-compact-left"></i></a>
+          </li> -->
+        } @for (pageNumber of getPageNumbers(); track pageNumber) {
+        <li
+          class="page-item"
+          [ngClass]="{ active: pageNumber === page }"
+          (click)="updateConnectionsToDisplay(pageNumber)"
+        >
+          <a class="page-link">{{ pageNumber }}</a>
+        </li>
+        } @if (page < pageCount - 2) {
+        <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page + 1)">
+            <a class="page-link"><i class="bi bi-chevron-right"></i></a>
+          </li> -->
+        <li class="page-item" (click)="updateConnectionsToDisplay(pageCount)">
+          <a class="page-link"><i class="bi bi-chevron-double-right"></i></a>
+        </li>
+        }
+      </ul>
+      }
+    </div>
+  </div>
+</div>
+<div>
+  <div class="d-flex justify-content-end pe-5">
+    <a href="https://github.com/stachowiakdawid/train-delay"><i class="bi bi-github"></i> GitHub</a>
+  </div>
+</div>
