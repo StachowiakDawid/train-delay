@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Sprawdź opóźnienia pociągów na danej trasie</h1>
+            <form>
+                <div class="form-group row">
+                    <label for="departmentStation" class="col-sm-2 col-form-label">Stacja początkowa</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="departmentStation" [formControl]="department">
+                    </div>
+                </div>
+                <div class="form-group row mt-2">
+                    <label for="destinationStation" class="col-sm-2 col-form-label">Stacja końcowa</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="destinationStation" [formControl]="destination">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 d-flex justify-content-center mb-3"><button type="button"
+                            class="btn btn-primary mt-2" (click)="submit()">Wyszukaj historię
+                            opóźnień</button></div>
+                </div>
+            </form>
+            <!-- <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <h5>Stacja początkowa</h5>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <h5>Stacja końcowa</h5>
+                </div>
+            </div> -->
+            <ng-container *ngFor="let connection of response">
+                <div class="row">
+                    <div class="col-sm-6 d-flex justify-content-between">
+                        {{ connection.start.department_timestamp | dfnsFormat: 'MM-dd-yyyy hh:mm:ss' }}
+                        <span [ngClass]="[ connection.start.department_delay > 0 ? 'text-danger' : 'text-success' ]">{{
+                            connection.start.department_delay / 100 / 60 }} minut opóźnienia</span>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-between">
+                        {{ connection.end.department_timestamp | dfnsFormat: 'MM-dd-yyyy hh:mm:ss' }}
+                        <span [ngClass]="[ connection.end.department_delay > 0 ? 'text-danger' : 'text-success' ]">{{
+                            connection.end.department_delay / 100 / 60 }} minut opóźnienia</span>
+                    </div>
+                </div>
+                <hr>
+            </ng-container>
+        </div>
+    </div>
+</div>

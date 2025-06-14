@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["typedSql"]
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Connection {
+  id              Int      @id(map: "connection_pk") @default(autoincrement())
+  department_date DateTime @db.Date
+  name            String  @db.VarChar
+  operator        String  @db.VarChar
+  destination     String  @db.VarChar
+  stops           Stop[]
+  pkp_id          String  @db.VarChar @unique
+}
+
+model Stop {
+  id                   Int       @id(map: "stop_pk") @default(autoincrement())
+  connection_id        Int
+  order_number         Int
+  connection           Connection    @relation(fields: [connection_id], references: [id])
+  station              String   @db.VarChar
+  arrival_timestamp    DateTime @db.Timestamp(6)
+  department_timestamp DateTime @db.Timestamp(6)
+  arrival_time         DateTime @db.Time(0)
+  department_time      DateTime @db.Time(0)
+  arrival_delay        Int
+  department_delay     Int
+  platform             String   @db.VarChar
+  railway              String   @db.VarChar
+  problems             String[]  @db.VarChar
+  cancelled            Boolean
+  first_station        Boolean
+  last_station         Boolean
+}
+

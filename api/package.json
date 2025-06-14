@@ -1,0 +1,31 @@
+{
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.1",
+    "prisma": "^6.9.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "name": "train-delay-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "axios": "^1.10.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.25.5",
+    "express": "^5.1.0",
+    "get-tsconfig": "^4.10.1",
+    "resolve-pkg-maps": "^1.0.0",
+    "undici-types": "^7.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
