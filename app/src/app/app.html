@@ -24,14 +24,14 @@
             <ng-container *ngFor="let connection of response">
                 <div class="row">
                     <div class="col-sm-6 d-flex justify-content-between">
-                        {{ connection.department_timestamp | dfnsFormat: 'MM-dd-yyyy hh:mm:ss' }}
+                        {{ (connection.department_timestamp | slice: 0 :-3).toString().replace("T", " ") }}
                         <span [ngClass]="[ connection.department_delay > 0 ? 'text-danger' : 'text-success' ]">{{
                             connection.department_delay / 100 / 60 }} minut opóźnienia</span>
                     </div>
                     <div class="col-sm-6 d-flex justify-content-between">
-                        {{ connection.s2_department_timestamp | dfnsFormat: 'MM-dd-yyyy hh:mm:ss' }}
-                        <span [ngClass]="[ connection.s2_department_delay > 0 ? 'text-danger' : 'text-success' ]">{{
-                            connection.s2_department_delay / 100 / 60 }} minut opóźnienia</span>
+                        {{ (connection.s2_arrival_timestamp | slice: 0 :-3).toString().replace("T", " ") }}
+                        <span [ngClass]="[ connection.s2_arrival_delay > 0 ? 'text-danger' : 'text-success' ]">{{
+                            connection.s2_arrival_delay / 100 / 60 }} minut opóźnienia</span>
                     </div>
                 </div>
                 <hr>
