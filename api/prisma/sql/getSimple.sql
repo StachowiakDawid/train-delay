@@ -1,15 +1,9 @@
-select s.station,
-            s.arrival_timestamp,
+select      s.arrival_timestamp,
             s.department_timestamp,
-            s.arrival_time,
-            s.department_time,
             s.arrival_delay,
             s.department_delay,
-            s2.station as s2_station,
             s2.arrival_timestamp as s2_arrival_timestamp,
             s2.department_timestamp as s2_department_timestamp,
-            s2.arrival_time as s2_arrival_time,
-            s2.department_time as s2_department_time,
             s2.arrival_delay as s2_arrival_delay,
             s2.department_delay as s2_department_delay
         from "Stop" s
