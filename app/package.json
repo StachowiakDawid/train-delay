@@ -19,8 +19,6 @@
     "@ng-bootstrap/ng-bootstrap": "github:sorcamarian/ng-bootstrap#only-src-folder",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
-    "date-fns": "^4.1.0",
-    "ngx-date-fns": "^12.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
