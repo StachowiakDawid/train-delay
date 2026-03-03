@@ -80,10 +80,10 @@ async function main() {
       await load(await fs.promises.readFile(`./data/${file}`, "utf-8"), file);
       i++;
     }
-    await prisma.$executeRaw`create extension ltree`;
-    await prisma.$executeRaw`alter table route add ltree_route ltree`;
-    await prisma.$executeRaw`update route set ltree_route = text2ltree(route)`;
-    await prisma.$executeRaw`create index route_ltree_route_index on route using gist(ltree_route)`;
+    // await prisma.$executeRaw`create extension ltree`;
+    // await prisma.$executeRaw`alter table route add ltree_route ltree`;
+    // await prisma.$executeRaw`update route set ltree_route = text2ltree(route)`;
+    // await prisma.$executeRaw`create index route_ltree_route_index on route using gist(ltree_route)`;
     await prisma.$executeRaw`update route set array_route = string_to_array(route, '.')`;
     await prisma.$executeRaw`create index route_array_route_index on route using gin(array_route)`;
   });

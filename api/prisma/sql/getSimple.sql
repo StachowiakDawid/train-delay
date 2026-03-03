@@ -1,15 +1,3 @@
--- ltree
--- select c.department_date + o.departments_offsets [index(r.ltree_route, text2ltree($1)) + 1] * interval '1 second' as department_timestamp,
---     c.department_delays [index(r.ltree_route, text2ltree($1)) + 1] as department_delay,
---     c.department_date + o.arrivals_offsets [index(r.ltree_route, text2ltree($2)) + 1] * interval '1 second' as s2_arrival_timestamp,
---     c.arrival_delays [index(r.ltree_route, text2ltree($2)) + 1] as s2_arrival_delay,
---     (c.cancelled[index(r.ltree_route, text2ltree($1)) + 1] or c.cancelled[index(r.ltree_route, text2ltree($2)) + 1]) as cancelled
--- from connection c
---     inner join route r on r.id = c.route_id
---     and r.ltree_route ~ cast($3 as lquery)
---     inner join time_offset o on o.id = c.time_offset_id
--- order by department_timestamp desc;
-
 -- array
 select c.department_date + o.departments_offsets [array_position(r.array_route, $1)] * interval '1 second' as department_timestamp,
     c.department_delays [array_position(r.array_route, $1)] as department_delay,
@@ -22,3 +10,15 @@ from connection c
     inner join time_offset o on o.id = c.time_offset_id
     left join cancellation ca on ca.id = c.cancellation_id
 order by department_timestamp desc;
+
+-- ltree
+-- select c.department_date + o.departments_offsets [index(r.ltree_route, text2ltree($1)) + 1] * interval '1 second' as department_timestamp,
+--     c.department_delays [index(r.ltree_route, text2ltree($1)) + 1] as department_delay,
+--     c.department_date + o.arrivals_offsets [index(r.ltree_route, text2ltree($2)) + 1] * interval '1 second' as s2_arrival_timestamp,
+--     c.arrival_delays [index(r.ltree_route, text2ltree($2)) + 1] as s2_arrival_delay,
+--     (c.cancelled[index(r.ltree_route, text2ltree($1)) + 1] or c.cancelled[index(r.ltree_route, text2ltree($2)) + 1]) as cancelled
+-- from connection c
+--     inner join route r on r.id = c.route_id
+--     and r.ltree_route ~ cast($3 as lquery)
+--     inner join time_offset o on o.id = c.time_offset_id
+-- order by department_timestamp desc;
