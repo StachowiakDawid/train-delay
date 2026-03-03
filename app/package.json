@@ -16,6 +16,7 @@
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@electric-sql/pglite": "^0.3.15",
     "@ng-bootstrap/ng-bootstrap": "github:sorcamarian/ng-bootstrap#only-src-folder",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
