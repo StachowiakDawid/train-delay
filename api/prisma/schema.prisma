@@ -18,35 +18,35 @@ datasource db {
 model route {
   id         Int          @id(map: "route_pk") @default(autoincrement())
   route      String       @unique @db.VarChar
+  array_route String[]     @db.VarChar
+  // ltree_route String       @db.Ltree
   connection connection[]
 }
 
 model time_offset {
-  id          Int          @id(map: "time_offset_pk") @default(autoincrement())
-  offsets     Int[]
-  arrivals    connection[] @relation("arrivals_offsets")
-  departments connection[] @relation("departments_offsets")
+  id                  Int          @id(map: "time_offset_pk") @default(autoincrement())
+  arrivals_offsets    Int[]
+  departments_offsets Int[]
+  connections         connection[]
 }
 
 model connection {
-  id                     Int         @id(map: "connection_pk") @default(autoincrement())
-  department_date        DateTime    @db.Timestamp(0)
+  id                Int         @id(map: "connection_pk") @default(autoincrement())
+  department_date   DateTime    @db.Timestamp(0)
   // name            String   @db.VarChar
-  operator               String      @db.VarChar
+  operator          String      @db.VarChar
   // destination     String   @db.VarChar
   // connection_type String   @db.VarChar
   // description     String   @db.VarChar
   // stops                  stop[]
   // pkp_id          String   @db.VarChar
-  route_id               Int
-  route                  route       @relation(fields: [route_id], references: [id])
-  arrivals_offsets_id    Int
-  arrivals_offsets       time_offset @relation(fields: [arrivals_offsets_id], references: [id], name: "arrivals_offsets")
-  departments_offsets_id Int
-  departments_offsets    time_offset @relation(fields: [departments_offsets_id], references: [id], name: "departments_offsets")
-  arrival_delays         Int[]
-  department_delays      Int[]
-  cancelled              Boolean[]
+  route_id          Int
+  route             route       @relation(fields: [route_id], references: [id])
+  time_offset_id    Int
+  time_offset       time_offset @relation(fields: [time_offset_id], references: [id])
+  arrival_delays    Int[]
+  department_delays Int[]
+  cancelled         Boolean[]
 }
 
 // model stop {

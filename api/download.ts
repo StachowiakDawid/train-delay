@@ -6,7 +6,10 @@ function load(url: string, day: string, i: number) {
   axios.get(url).then(
     async (res) => {
       const data = res.data;
-      fs.writeFile(`./data/${day}_${i}.json`, JSON.stringify(data), (err) => {
+      const name = `./data/${day}_${i}.json`;
+      if (fs.existsSync(name))
+        return;
+      fs.writeFile(name, JSON.stringify(data), (err) => {
         if (err) {
           console.error(err);
         }

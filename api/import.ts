@@ -17,37 +17,25 @@ async function load(data: any, day: string) {
     const route = connection[6].map((stop: any) => stop[0].replaceAll('.', '').replaceAll('dot', '')).join(".");
     const arrivals = connection[6].map((stop: any) => (new Date(stop[1][0]).getTime() - department_date.getTime())/1000);
     const departments = connection[6].map((stop: any) => (new Date(stop[2][0]).getTime() - department_date.getTime())/1000);
-    let arrivalsId: any = await prisma.time_offset.findFirst({
+    let timeOffsetId: any = await prisma.time_offset.findFirst({
       where: {
-        offsets: {
-          equals: arrivals,
-        }
-      }
-    });
-    arrivalsId = arrivalsId?.id;
-    if (!arrivalsId) {
-      arrivalsId = await prisma.time_offset.create({
-        data: {
-          offsets: arrivals,
-        },
-      });
-      arrivalsId = arrivalsId.id;
-    }
-    let departmentsId: any = await prisma.time_offset.findFirst({
-      where: {
-        offsets: {
+        departments_offsets: {
           equals: departments,
-        }
+        },
+        arrivals_offsets: {
+          equals: arrivals,
+        },
       }
     });
-    departmentsId = departmentsId?.id;
-    if (!departmentsId) {
-      departmentsId = await prisma.time_offset.create({
+    timeOffsetId = timeOffsetId?.id;
+    if (!timeOffsetId) {
+      timeOffsetId = await prisma.time_offset.create({
         data: {
-          offsets: departments,
+          departments_offsets: departments,
+          arrivals_offsets: arrivals,
         },
       });
-      departmentsId = departmentsId.id;
+      timeOffsetId = timeOffsetId.id;
     }
     let routeId: any = await prisma.$queryRaw`SELECT id FROM route WHERE route = ${route}`;
     routeId = routeId[0]?.id;
@@ -63,8 +51,7 @@ async function load(data: any, day: string) {
       data: {
         department_date,
         operator,
-        arrivals_offsets_id: arrivalsId,
-        departments_offsets_id: departmentsId,
+        time_offset_id: timeOffsetId,
         route_id: routeId,
         arrival_delays: connection[6].map((stop: any) => stop[1][1]/1000),
         department_delays: connection[6].map((stop: any) => stop[2][1]/1000),
@@ -88,6 +75,8 @@ async function main() {
     await prisma.$executeRaw`alter table route add ltree_route ltree`;
     await prisma.$executeRaw`update route set ltree_route = text2ltree(route)`;
     await prisma.$executeRaw`create index route_ltree_route_index on route using gist(ltree_route)`;
+    await prisma.$executeRaw`update route set array_route = string_to_array(route, '.')`;
+    await prisma.$executeRaw`create index route_array_route_index on route using gin(array_route)`;
   });
 }
 
