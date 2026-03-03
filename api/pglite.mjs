@@ -2,7 +2,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { PrismaClient } from "./generated/prisma/index.js";
 import fs from "fs";
 const prisma = new PrismaClient();
-const db = new PGlite("./pgdata");
+const db = new PGlite();
 
 async function main() {
   await prisma.$executeRaw`COPY connection TO '/tmp/connection.csv' WITH HEADER DELIMITER ';' ;`;

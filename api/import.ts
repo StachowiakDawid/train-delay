@@ -14,7 +14,8 @@ async function load(data: any, day: string) {
   department_date.setHours(0, 0, 0, 0);
   for (let connection of data) {
     const operator = connection[5];
-    const route = connection[6].map((stop: any) => stop[0].replaceAll('.', '').replaceAll('dot', '')).join(".");
+    const stations = connection[6].map((stop: any) => stop[0].replaceAll('.', '').replaceAll('dot', ''));
+    const route = stations.join(".");
     const arrivals = connection[6].map((stop: any) => (new Date(stop[1][0]).getTime() - department_date.getTime())/1000);
     const departments = connection[6].map((stop: any) => (new Date(stop[2][0]).getTime() - department_date.getTime())/1000);
     let timeOffsetId: any = await prisma.time_offset.findFirst({
@@ -43,6 +44,7 @@ async function load(data: any, day: string) {
       const routeEntity = await prisma.route.create({
         data: {
           route,
+          array_route: stations,
         },
       });
       routeId = routeEntity.id;
@@ -63,6 +65,7 @@ async function load(data: any, day: string) {
 
 async function main() {
   fs.readdir("./data", async (err: any, allFiles: string[]) => {
+    await prisma.$executeRaw`create index if not exists route_array_route_index on route using gin(array_route)`;
     let i = 0;
     for (let file of allFiles) {
       // if (i > 5) continue;
@@ -75,8 +78,7 @@ async function main() {
     // await prisma.$executeRaw`alter table route add ltree_route ltree`;
     // await prisma.$executeRaw`update route set ltree_route = text2ltree(route)`;
     // await prisma.$executeRaw`create index route_ltree_route_index on route using gist(ltree_route)`;
-    await prisma.$executeRaw`update route set array_route = string_to_array(route, '.')`;
-    await prisma.$executeRaw`create index route_array_route_index on route using gin(array_route)`;
+    // await prisma.$executeRaw`update route set array_route = string_to_array(route, '.')`;
   });
 }
 
