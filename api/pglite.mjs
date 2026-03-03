@@ -19,7 +19,7 @@ async function main() {
 	arrival_delays _int4 NULL,
 	department_delays _int4 NULL,
 	time_offset_id int4 NOT NULL,
-	cancellation_id int8 NULL,
+	cancelled _boolean NULL,
 	CONSTRAINT connection_pk PRIMARY KEY (id)
 );`);
 
@@ -43,16 +43,9 @@ async function main() {
     `CREATE UNIQUE INDEX IF NOT EXISTS route_route_key ON public.route USING btree (route);`,
   );
 
-  await db.exec(`CREATE TABLE IF NOT EXISTS public.cancellation (
-	id serial4 NOT NULL,
-	cancelled _bool NULL,
-	CONSTRAINT cancellation_pk PRIMARY KEY (id)
-);`);
-
   await db.exec(`DELETE FROM public."connection";`);
   await db.exec(`DELETE FROM public.time_offset;`);
   await db.exec(`DELETE FROM public.route;`);
-  await db.exec(`DELETE FROM public.cancellation;`);
 
   let blob = await fs.openAsBlob("/tmp/connection.csv");
 
@@ -78,16 +71,6 @@ async function main() {
 
   await db.query(
     "COPY route FROM '/dev/blob' WITH HEADER DELIMITER ';' ;",
-    [],
-    {
-      blob,
-    },
-  );
-
-  blob = await fs.openAsBlob("/tmp/cancellation.csv");
-
-  await db.query(
-    "COPY cancellation FROM '/dev/blob' WITH HEADER DELIMITER ';' ;",
     [],
     {
       blob,

@@ -15,17 +15,10 @@ datasource db {
 //   // stop stop[]
 // }
 
-model cancellation {
-  id         Int          @id(map: "cancellation_pk") @default(autoincrement())
-  cancelled   Boolean[]
-  connections connection[]
-}
-
 model route {
   id         Int          @id(map: "route_pk") @default(autoincrement())
   route      String       @unique @db.VarChar
   array_route String[]     @db.VarChar
-  // ltree_route String       @db.Ltree
   connection connection[]
 }
 
@@ -52,8 +45,7 @@ model connection {
   time_offset       time_offset @relation(fields: [time_offset_id], references: [id])
   arrival_delays    Int[]
   department_delays Int[]
-  cancellation_id   Int?
-  cancellation      cancellation? @relation(fields: [cancellation_id], references: [id])
+  cancelled         Boolean[]
 }
 
 // model stop {

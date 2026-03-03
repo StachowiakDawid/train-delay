@@ -47,15 +47,6 @@ async function load(data: any, day: string) {
       });
       routeId = routeEntity.id;
     }
-    let cancellationId: any = null;
-    if (connection[6].map((stop: any) => stop[5]).includes(true)) {
-      const cancellationEntity = await prisma.cancellation.create({
-        data: {
-          cancelled: connection[6].map((stop: any) => stop[5]),
-        },
-      });
-      cancellationId = cancellationEntity.id;
-    }
     await prisma.connection.create({
       data: {
         department_date,
@@ -64,7 +55,7 @@ async function load(data: any, day: string) {
         route_id: routeId,
         arrival_delays: connection[6].map((stop: any) => stop[1][1]/1000),
         department_delays: connection[6].map((stop: any) => stop[2][1]/1000),
-        cancellation_id: cancellationId,
+        cancelled: connection[6].map((stop: any) => stop[5]),
       },
     });
   }
