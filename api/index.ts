@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 const app = express();
 import 'dotenv/config';
 import process  from 'node:process';
+import replacements from './char_replacements';
 
 BigInt.prototype.toJSON = function() {
     return this.toString()
@@ -14,16 +15,18 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Credentials', `true`);
     next();
 });
 
 app.use(express.json());
 
 app.get('/api/:department/:destination', async (req, res) => {
-    const { department, destination } = req.params;
-    const ltree = `*.${department}.*.${destination}.*`;
-    const data = await prisma.$queryRawTyped(getSimple(department, destination, ltree));
+    let { department, destination } = req.params;
+    const expression   = /[ąćęłńóśźż]/gi; 
+    department = department.trim().toLowerCase().replaceAll(' ', '-').replace(expression, (letter) => replacements[letter]);
+    destination = destination.trim().toLowerCase().replaceAll(' ', '-').replace(expression, (letter) => replacements[letter]);
+    const data = await prisma.$queryRawTyped(getSimple(department, destination));
 
     res.json(data);
 });

@@ -8,7 +8,6 @@ async function main() {
   await prisma.$executeRaw`COPY connection TO '/tmp/connection.csv' WITH HEADER DELIMITER ';' ;`;
   await prisma.$executeRaw`COPY time_offset TO '/tmp/time_offset.csv' WITH HEADER DELIMITER ';' ;`;
   await prisma.$executeRaw`COPY route TO '/tmp/route.csv' WITH HEADER DELIMITER ';' ;`;
-  await prisma.$executeRaw`COPY cancellation TO '/tmp/cancellation.csv' WITH HEADER DELIMITER ';' ;`;
 
 
   await db.exec(`CREATE TABLE IF NOT EXISTS public."connection" (
@@ -16,10 +15,10 @@ async function main() {
 	department_date timestamp(0) NOT NULL,
 	"operator" varchar NOT NULL,
 	route_id int4 NOT NULL,
+	time_offset_id int4 NOT NULL,
 	arrival_delays _int4 NULL,
 	department_delays _int4 NULL,
-	time_offset_id int4 NOT NULL,
-	cancelled _boolean NULL,
+	cancelled _bool NULL,
 	CONSTRAINT connection_pk PRIMARY KEY (id)
 );`);
 

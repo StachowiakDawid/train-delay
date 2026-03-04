@@ -42,3 +42,5 @@ testem.log
 Thumbs.db
 
 src/proxy.conf.json
+!public/favicon.ico
+public/*
