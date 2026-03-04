@@ -1,6 +1,10 @@
 import { PrismaClient } from "./generated/prisma";
+import { PrismaPg } from "@prisma/adapter-pg";
 import fs from "node:fs";
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter});
 import "dotenv/config";
 
 async function load(data: any, day: string) {

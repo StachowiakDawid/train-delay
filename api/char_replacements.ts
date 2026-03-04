@@ -1,5 +1,5 @@
 interface CharMap {
-  [key: string]: string | undefined
+  [key: string]: string
 }
 
 const replacements: CharMap ={

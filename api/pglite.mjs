@@ -1,14 +1,18 @@
 import { PGlite } from "@electric-sql/pglite";
 import { PrismaClient } from "./generated/prisma/index.js";
+import { PrismaPg } from "@prisma/adapter-pg";
 import fs from "fs";
-const prisma = new PrismaClient();
+import "dotenv/config";
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter });
 const db = new PGlite();
 
 async function main() {
   await prisma.$executeRaw`COPY connection TO '/tmp/connection.csv' WITH HEADER DELIMITER ';' ;`;
   await prisma.$executeRaw`COPY time_offset TO '/tmp/time_offset.csv' WITH HEADER DELIMITER ';' ;`;
   await prisma.$executeRaw`COPY route TO '/tmp/route.csv' WITH HEADER DELIMITER ';' ;`;
-
 
   await db.exec(`CREATE TABLE IF NOT EXISTS public."connection" (
 	id serial4 NOT NULL,

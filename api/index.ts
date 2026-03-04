@@ -1,18 +1,24 @@
 import express from 'express';
 import { PrismaClient } from './generated/prisma';
 import { getSimple } from './generated/prisma/sql';
-const prisma = new PrismaClient();
-const app = express();
 import 'dotenv/config';
 import process  from 'node:process';
 import replacements from './char_replacements';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+const prisma = new PrismaClient({ adapter});
+
+const app = express();
 
 BigInt.prototype.toJSON = function() {
     return this.toString()
 } 
 
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+    res.setHeader('Access-Control-Allow-Origin', `${process.env.FRONTEND_URL}`);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', `true`);
