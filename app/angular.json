@@ -28,11 +28,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/@electric-sql/pglite/dist",
-                "output": "/"
               }
             ],
             "styles": [

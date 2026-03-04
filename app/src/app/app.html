@@ -13,7 +13,7 @@
               class="form-control"
               id="departmentStation"
               [(ngModel)]="department"
-              [disabled]="!this.pgliteService.isReady().valueOf()"
+              [disabled]="false"
               name="department"
             />
           </div>
@@ -28,7 +28,7 @@
               class="form-control"
               id="destinationStation"
               [(ngModel)]="destination"
-              [disabled]="!this.pgliteService.isReady().valueOf()"
+              [disabled]="false"
               name="destination"
             />
           </div>
@@ -39,7 +39,7 @@
               type="button"
               class="btn btn-primary mt-2 me-3"
               name="submitButton"
-              [disabled]="!this.pgliteService.isReady().valueOf()"
+              [disabled]="false"
               (click)="submit()"
             >
               Wyszukaj historię opóźnień
@@ -55,18 +55,19 @@
         </div>
       </form>
       <div></div>
-      @if (!this.pgliteService.isReady().valueOf()) {
+      <!-- @if (!this.pgliteService.isReady().valueOf()) {
       <div class="d-flex justify-content-center mt-4">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      } @else if (response.length !== 0) {
+      } -->
+      @if (response.length !== 0) {
       <div class="text-center">
         {{ response.length }} {{ getResultsDeclension() }}. Strona {{ page }} z
         {{ pageCount }}.
       </div>
-      <nav aria-label="Page navigation example">
+      <nav>
         <ul class="pagination justify-content-center">
           @if (page > 3) {
           <li class="page-item" (click)="updateConnectionsToDisplay(1)">
@@ -105,25 +106,52 @@
         [ngClass]="{ 'text-decoration-line-through': connection.cancelled }"
       >
         <div class="col-sm-6 d-flex justify-content-between">
-          {{ (connection.department_timestamp | date:'yyyy-MM-dd HH:mm') }}
+          {{ (connection.department_timestamp | date:'yyyy-MM-dd HH:mm') }} @if
+          (!connection.cancelled) {
           <span
-            *ngIf="!connection.cancelled"
             [ngClass]="[ connection.department_delay > 0 ? 'text-danger' : 'text-success' ]"
             >{{ getMinuteDeclension(connection.department_delay) }}
             opóźnienia</span
-          >
+          >}
         </div>
         <div class="col-sm-6 d-flex justify-content-between">
-          {{ (connection.s2_arrival_timestamp | date:'yyyy-MM-dd HH:mm') }}
+          {{ (connection.s2_arrival_timestamp | date:'yyyy-MM-dd HH:mm') }} @if
+          (!connection.cancelled) {
           <span
-            *ngIf="!connection.cancelled"
             [ngClass]="[ connection.s2_arrival_delay > 0 ? 'text-danger' : 'text-success' ]"
             >{{ getMinuteDeclension(connection.s2_arrival_delay) }}
             opóźnienia</span
           >
+          }
         </div>
       </div>
       <hr />
+      } @if (response.length !== 0) {
+      <ul class="pagination justify-content-center">
+        @if (page > 3) {
+        <li class="page-item" (click)="updateConnectionsToDisplay(1)">
+          <a class="page-link"><i class="bi bi-chevron-double-left"></i></a>
+        </li>
+        <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page - 1)">
+            <a class="page-link"><i class="bi bi-chevron-compact-left"></i></a>
+          </li> -->
+        } @for (pageNumber of getPageNumbers(); track pageNumber) {
+        <li
+          class="page-item"
+          [ngClass]="{ active: pageNumber === page }"
+          (click)="updateConnectionsToDisplay(pageNumber)"
+        >
+          <a class="page-link">{{ pageNumber }}</a>
+        </li>
+        } @if (page < pageCount - 2) {
+        <!-- <li class="page-item" (click)="updateConnectionsToDisplay(page + 1)">
+            <a class="page-link"><i class="bi bi-chevron-right"></i></a>
+          </li> -->
+        <li class="page-item" (click)="updateConnectionsToDisplay(pageCount)">
+          <a class="page-link"><i class="bi bi-chevron-double-right"></i></a>
+        </li>
+        }
+      </ul>
       }
     </div>
   </div>

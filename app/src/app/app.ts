@@ -4,7 +4,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DelayService } from './delay.service';
 import { CommonModule } from '@angular/common';
 import { TrainStop } from './trainStop.model';
-import { PGliteService } from './pglite.service';
+// import { PGliteService } from './pglite.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ export class App implements OnInit {
   department: string = '';
   submitButton = new FormControl('');
   delayService = inject(DelayService);
-  pgliteService = inject(PGliteService);
+  // pgliteService = inject(PGliteService);
   response: TrainStop[] = [];
   page: number = 1;
   pageSize: number = 100;
@@ -27,7 +27,7 @@ export class App implements OnInit {
   isLoading: boolean = false;
 
   ngOnInit() {
-    this.pgliteService.init('/pgdata.tar.gz');
+    // this.pgliteService.init('/pgdata.tar.gz');
   }
 
   submit() {
@@ -35,20 +35,20 @@ export class App implements OnInit {
     this.isLoading = true;
     setTimeout(() => {
     this.delayService
-      .getForDepartmentDestinationFromPGlite(this.department, this.destination)
-      .then(
-        (res) => {
+      .getForDepartmentDestinationFromAPI(this.department, this.destination)
+      .subscribe({
+        next: (res) => {
           this.response = res;
           this.page = 1;
           this.pageCount = Math.ceil(this.response.length / this.pageSize);
           this.updateConnectionsToDisplay();
           this.isLoading = false;
         },
-        () => {
+        error: () => {
           this.pageCount = 0;
           this.isLoading = false;
         },
-      );
+      });
     }, 50);
   }
 

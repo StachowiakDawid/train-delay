@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TrainStop } from './trainStop.model';
-import { PGliteService } from './pglite.service';
+// import { PGliteService } from './pglite.service';
 import replacements from './char_replacements';
 import sql from './query';
 
@@ -11,7 +11,7 @@ import sql from './query';
 })
 export class DelayService {
   private http = inject(HttpClient);
-  private pgliteService = inject(PGliteService);
+  // private pgliteService = inject(PGliteService);
   private expression = /[ąćęłńóśźż]/gi;
 
   constructor() {}
@@ -23,18 +23,18 @@ export class DelayService {
     return this.http.get<TrainStop[]>(`/api/${department}/${destination}`);
   }
 
-  async getForDepartmentDestinationFromPGlite(
-    department: string,
-    destination: string,
-  ): Promise<TrainStop[]> {
-    department = this.convertStation(department);
-    destination = this.convertStation(destination);
-    const res = await this.pgliteService.query<TrainStop>(sql, [
-      department,
-      destination,
-    ]);
-    return res.rows;
-  }
+  // async getForDepartmentDestinationFromPGlite(
+  //   department: string,
+  //   destination: string,
+  // ): Promise<TrainStop[]> {
+  //   department = this.convertStation(department);
+  //   destination = this.convertStation(destination);
+  //   const res = await this.pgliteService.query<TrainStop>(sql, [
+  //     department,
+  //     destination,
+  //   ]);
+  //   return res.rows;
+  // }
 
   private convertStation(station: string): string {
     return (station ?? '')

@@ -1,5 +1,5 @@
 import express from 'express';
-import { PrismaClient } from './generated/prisma';
+import { PrismaClient } from './generated/prisma/client';
 import { getSimple } from './generated/prisma/sql';
 import 'dotenv/config';
 import process  from 'node:process';
