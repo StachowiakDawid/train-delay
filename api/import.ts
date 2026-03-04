@@ -69,12 +69,13 @@ async function load(data: any, day: string) {
 
 async function main() {
   fs.readdir("./data", async (err: any, allFiles: string[]) => {
+    const today = new Date();
+    const date =`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}_`;
+    console.log(date);
     await prisma.$executeRaw`create index if not exists route_array_route_index on route using gin(array_route)`;
     let i = 0;
     for (let file of allFiles) {
-      // if (i > 5) continue;
-      // if (!file.startsWith('2026-2-24')) continue;
-      console.log(file);
+      if (!file.startsWith(date)) continue;
       await load(await fs.promises.readFile(`./data/${file}`, "utf-8"), file);
       i++;
     }

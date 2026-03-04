@@ -29,7 +29,10 @@ async function main() {
     }
     allFiles = JSON.parse(allFiles);
     let i = 0;
+    const today = new Date();
+    const date =`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
     for (let day of Object.keys(allFiles.files)) {
+      if (day !== date) continue;
       for (let url of allFiles.files[day]) {
         i++;
         console.log(day);

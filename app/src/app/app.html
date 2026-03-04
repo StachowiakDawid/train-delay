@@ -62,7 +62,7 @@
         </div>
       </div>
       } -->
-      @if (response.length !== 0) {
+      @if (response.length !== 0 && !isLoading) {
       <div class="text-center">
         {{ response.length }} {{ getResultsDeclension() }}. Strona {{ page }} z
         {{ pageCount }}.
@@ -126,7 +126,7 @@
         </div>
       </div>
       <hr />
-      } @if (response.length !== 0) {
+      } @if (response.length !== 0 && !isLoading) {
       <ul class="pagination justify-content-center">
         @if (page > 3) {
         <li class="page-item" (click)="updateConnectionsToDisplay(1)">
